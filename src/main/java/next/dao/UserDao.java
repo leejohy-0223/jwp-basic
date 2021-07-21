@@ -25,47 +25,23 @@ public class UserDao {
     public List<User> findAll() throws SQLException {
 
         JdbcTemplate jdbcTemplate = new JdbcTemplate();
-        PreparedStatementSetter pss = new PreparedStatementSetter() {
-            @Override
-            public void values(PreparedStatement pstmt) throws SQLException {
 
-            }
-        };
-        RowMapper<User> rowMapper = new RowMapper<User>() {
-            @Override
-            public User MapRow(ResultSet rs) throws SQLException {
-                return new User(
-                        rs.getString("userId"),
-                        rs.getString("password"),
-                        rs.getString("name"),
-                        rs.getString("email"));
-            }
-        };
 
         String sql = "SELECT userId, password, name, email FROM USERS";
-        return jdbcTemplate.query(sql, pss, rowMapper);
+        return jdbcTemplate.query(sql, pst -> {}, rs -> new User(rs.getString("userID"),
+                rs.getString("password"),
+                rs.getString("name"),
+                rs.getString("email")));
     }
 
     public User findByUserId(String userId) throws SQLException {
         JdbcTemplate jdbcTemplate = new JdbcTemplate();
-        PreparedStatementSetter pss = new PreparedStatementSetter() {
-            @Override
-            public void values(PreparedStatement pstmt) throws SQLException {
-                pstmt.setString(1, userId);
-            }
-        };
-        RowMapper<User> rowMapper = new RowMapper<User>() {
-            @Override
-            public User MapRow(ResultSet rs) throws SQLException {
-                return new User(
-                        rs.getString("userId"),
-                        rs.getString("password"),
-                        rs.getString("name"),
-                        rs.getString("email"));
-            }
-        };
+
         String sql = "SELECT userId, password, name, email FROM USERS WHERE userid=?";
-        return jdbcTemplate.queryForObject(sql, pss, rowMapper);
+        return jdbcTemplate.queryForObject(sql, pst -> pst.setString(1, userId), rs -> new User(rs.getString("userId"),
+                rs.getString("password"),
+                rs.getString("name"),
+                rs.getString("email")));
     }
 
 }
