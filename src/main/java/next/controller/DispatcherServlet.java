@@ -33,6 +33,7 @@ public class DispatcherServlet extends HttpServlet {
         Controller controller = rm.findController(requestUri);
 
         try{
+            // controller.execute의 결과로 url이 나옴.
             String viewName = controller.execute(req, resp);
             move(viewName, req, resp);
         } catch (Throwable e) {
