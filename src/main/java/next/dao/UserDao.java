@@ -10,32 +10,15 @@ import java.util.List;
 public class UserDao {
     public void insert(User user) throws SQLException {
         JdbcTemplate jdbcTemplate = new JdbcTemplate();
-        PreparedStatementSetter pss = new PreparedStatementSetter() {
-            @Override
-            public void setValues(PreparedStatement pstmt) throws SQLException {
-                pstmt.setString(1, user.getUserId());
-                pstmt.setString(2, user.getPassword());
-                pstmt.setString(3, user.getName());
-                pstmt.setString(4, user.getEmail());
-            }
-        };
         String query = "INSERT INTO USERS VALUES (?, ?, ?, ?)";
-        jdbcTemplate.update(query, pss);
+        jdbcTemplate.update(query, user.getUserId(), user.getPassword(), user.getName(), user.getEmail());
+
     }
 
     public void update(User user) throws SQLException {
         JdbcTemplate jdbcTemplate = new JdbcTemplate();
-        PreparedStatementSetter pss = new PreparedStatementSetter() {
-            @Override
-            public void setValues(PreparedStatement pstmt) throws SQLException {
-                pstmt.setString(1, user.getPassword());
-                pstmt.setString(2, user.getName());
-                pstmt.setString(3, user.getEmail());
-                pstmt.setString(4, user.getUserId());
-            }
-        };
         String query = "UPDATE USERS SET password=?, name=?, email=? WHERE userId=?";
-        jdbcTemplate.update(query, pss);
+        jdbcTemplate.update(query, user.getPassword(), user.getName(), user.getEmail(), user.getUserId());
     }
 
 
@@ -44,7 +27,7 @@ public class UserDao {
         JdbcTemplate jdbcTemplate = new JdbcTemplate();
         PreparedStatementSetter pss = new PreparedStatementSetter() {
             @Override
-            public void setValues(PreparedStatement pstmt) throws SQLException {
+            public void values(PreparedStatement pstmt) throws SQLException {
 
             }
         };
@@ -67,7 +50,7 @@ public class UserDao {
         JdbcTemplate jdbcTemplate = new JdbcTemplate();
         PreparedStatementSetter pss = new PreparedStatementSetter() {
             @Override
-            public void setValues(PreparedStatement pstmt) throws SQLException {
+            public void values(PreparedStatement pstmt) throws SQLException {
                 pstmt.setString(1, userId);
             }
         };

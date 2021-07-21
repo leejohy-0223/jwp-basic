@@ -13,7 +13,20 @@ public class JdbcTemplate {
     public void update(String query, PreparedStatementSetter pss) throws DataAccessException {
         try (Connection con = ConnectionManager.getConnection();
              PreparedStatement pstmt = con.prepareStatement(query)) {
-            pss.setValues(pstmt);
+            pss.values(pstmt);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new DataAccessException(e);
+        }
+    }
+
+    public void update(String query, Object... parameters) throws DataAccessException {
+        try (Connection con = ConnectionManager.getConnection();
+             PreparedStatement pstmt = con.prepareStatement(query)) {
+
+            for(int i=0; i<parameters.length; i++) {
+                pstmt.setObject(i + 1, parameters[i]);
+            }
             pstmt.executeUpdate();
         } catch (SQLException e) {
             throw new DataAccessException(e);
@@ -26,7 +39,7 @@ public class JdbcTemplate {
         try (Connection con = ConnectionManager.getConnection();
              PreparedStatement pstmt = con.prepareStatement(sql)) {
 
-            pss.setValues(pstmt);
+            pss.values(pstmt);
             rs = pstmt.executeQuery();
 
             List<T> result = new ArrayList<>();
