@@ -8,21 +8,21 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class UserDao {
-    public void insert(User user) throws SQLException {
+    public void insert(User user) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate();
         String query = "INSERT INTO USERS VALUES (?, ?, ?, ?)";
         jdbcTemplate.update(query, user.getUserId(), user.getPassword(), user.getName(), user.getEmail());
 
     }
 
-    public void update(User user) throws SQLException {
+    public void update(User user) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate();
         String query = "UPDATE USERS SET password=?, name=?, email=? WHERE userId=?";
         jdbcTemplate.update(query, user.getPassword(), user.getName(), user.getEmail(), user.getUserId());
     }
 
 
-    public List<User> findAll() throws SQLException {
+    public List<User> findAll() {
 
         JdbcTemplate jdbcTemplate = new JdbcTemplate();
 
@@ -34,7 +34,7 @@ public class UserDao {
                 rs.getString("email")));
     }
 
-    public User findByUserId(String userId) throws SQLException {
+    public User findByUserId(String userId) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate();
 
         String sql = "SELECT userId, password, name, email FROM USERS WHERE userid=?";

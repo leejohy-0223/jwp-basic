@@ -61,7 +61,7 @@ public class JdbcTemplate {
     }
 
     @SuppressWarnings("rawtypes")
-    public <T> T queryForObject(String sql, PreparedStatementSetter pss, RowMapper<T> rowMapper) throws SQLException {
+    public <T> T queryForObject(String sql, PreparedStatementSetter pss, RowMapper<T> rowMapper) throws DataAccessException {
         List<T> result = query(sql, pss, rowMapper);
         if (result.isEmpty()) {
             return null;
