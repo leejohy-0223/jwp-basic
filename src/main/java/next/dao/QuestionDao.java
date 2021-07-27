@@ -14,9 +14,23 @@ import core.jdbc.RowMapper;
 import next.model.Question;
 
 public class QuestionDao {
+    private static QuestionDao questionDao;
+    private JdbcTemplate jdbcTemplate = JdbcTemplate.getInstance();
+
+    // private으로 생성자를 지정하여, 외부에서 접근 불가하도록 함.
+    private QuestionDao() {
+
+    }
+
+    public static QuestionDao getInstance() {
+        if(questionDao == null) {
+            questionDao = new QuestionDao();
+        }
+        return questionDao;
+    }
+
     public Question insert(Question question) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate();
-        String sql = "INSERT INTO QUESTIONS " + 
+        String sql = "INSERT INTO QUESTIONS " +
                 "(writer, title, contents, createdDate) " + 
                 " VALUES (?, ?, ?, ?)";
         PreparedStatementCreator psc = new PreparedStatementCreator() {
@@ -37,7 +51,6 @@ public class QuestionDao {
     }
     
     public List<Question> findAll() {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate();
         String sql = "SELECT questionId, writer, title, createdDate, countOfAnswer FROM QUESTIONS "
                 + "order by questionId desc";
 
@@ -54,7 +67,6 @@ public class QuestionDao {
     }
 
     public Question findById(long questionId) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate();
         String sql = "SELECT questionId, writer, title, contents, createdDate, countOfAnswer FROM QUESTIONS "
                 + "WHERE questionId = ?";
 
@@ -67,5 +79,20 @@ public class QuestionDao {
         };
 
         return jdbcTemplate.queryForObject(sql, rm, questionId);
+    }
+
+    public void update(Question question) {
+        String sql = "UPDATE QUESTIONS set title = ?, contents = ? WHERE questionId = ?";
+        jdbcTemplate.update(sql, question.getTitle(), question.getContents(), question.getQuestionId());
+    }
+
+    public void updateCountOfAnswer(long questionId) {
+        String sql = "UPDATE QUESTIONS set countOfAnswer = countOfAnswer + 1 WHERE questionId = ?";
+        jdbcTemplate.update(sql, questionId);
+    }
+
+    public void delete(long questionId) {
+        String sql = "DELETE FROM QUESTIONS WHERE questionId = ?";
+        jdbcTemplate.update(sql, questionId);
     }
 }
